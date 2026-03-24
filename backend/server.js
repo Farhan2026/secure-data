@@ -1,50 +1,39 @@
 const express = require("express");
 const cors = require("cors");
-const dotenv = require("dotenv");
-const path = require("path");
-const { analyzeContent } = require("./analyzer");
-
-dotenv.config();
+const analyzeRoutes = require("./routes/analyzeRoutes");
 
 const app = express();
-const port = process.env.PORT || 3001;
-const frontendDist = path.join(__dirname, "..", "frontend", "dist");
+const PORT = process.env.PORT || 3001;
 
-app.use(cors());
-app.use(express.json({ limit: "2mb" }));
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL || "http://localhost:5173",
+  })
+);
+app.use(express.json({ limit: "1mb" }));
 
-app.get("/api/health", (req, res) => {
-  res.json({ ok: true, service: "sentinel-api" });
+app.get("/", (req, res) => {
+  res.json({
+    message: "AI Secure Data Intelligence Platform backend is running.",
+  });
 });
 
-app.post("/api/analyze", (req, res) => {
-  const { content = "", inputType = "text" } = req.body || {};
+app.get("/health", (req, res) => {
+  res.json({ ok: true });
+});
 
-  if (!content.trim()) {
-    return res.status(400).json({ error: "Content is required." });
+app.use("/analyze", analyzeRoutes);
+
+app.use((err, req, res, next) => {
+  if (err instanceof SyntaxError) {
+    return res.status(400).json({ error: "Invalid JSON body." });
   }
 
-  const result = analyzeContent(content, inputType);
-  return res.json(result);
-});
-
-app.use(express.static(frontendDist));
-
-app.get("*", (req, res) => {
-  res.sendFile(path.join(frontendDist, "index.html"));
-});
-
-function startServer() {
-  return app.listen(port, () => {
-    console.log(`Sentinel server running on http://localhost:${port}`);
+  return res.status(500).json({
+    error: err.message || "Something went wrong on the server.",
   });
-}
+});
 
-if (require.main === module) {
-  startServer();
-}
-
-module.exports = {
-  app,
-  startServer,
-};
+app.listen(PORT, () => {
+  console.log(`Backend server running on http://localhost:${PORT}`);
+});

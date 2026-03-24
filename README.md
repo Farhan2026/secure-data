@@ -1,58 +1,131 @@
-# Security Check
+# AI Secure Data Intelligence Platform
 
-This is a project made to check logs, text files, chat messages, and SQL snippets for sensitive information.
+## Project Overview
 
-The main idea is simple: sometimes people share logs or debug output without realizing that passwords, tokens, emails, or secrets are visible inside them. This project scans the content and shows the risk level along with some suggestions.
+This project is a simple secure data scanning platform made for academic use. It checks text input and uploaded log files to find risky information like passwords, API keys, emails, tokens, phone numbers, and stack traces.
 
-## What it does
+The main goal of the project is to help detect sensitive data before logs or text content are shared with other people.
 
-- scans text, logs, chats, and SQL content
-- detects common risky patterns like passwords, API keys, tokens, emails, and stack traces
-- gives a risk score and risk level
-- shows findings line by line in the UI
+## Features
 
-## Tech used
+- Text input analysis
+- File upload support for `.txt` and `.log`
+- Regex based detection engine
+- Risk score and overall risk level
+- Highlighted risky lines with line numbers
+- Simple AI style insights based on findings
+- Clean frontend and backend separation
 
-- React for frontend
-- Express / Node.js for backend
-- Vite for frontend build
+## Tech Stack
 
-## Project structure
+- Frontend: React + Vite
+- Backend: Node.js + Express
+- File Upload: Multer
+- Detection: Regex patterns
 
-- `frontend/` for the React app
-- `backend/` for the API and scanning logic
+## Folder Structure
 
-## How to run
+```text
+project-root/
+├── backend/
+│   ├── controllers/
+│   ├── routes/
+│   ├── utils/
+│   ├── package.json
+│   └── server.js
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── App.jsx
+│   │   ├── main.jsx
+│   │   └── styles.css
+│   ├── index.html
+│   ├── package.json
+│   └── vite.config.js
+└── README.md
+```
 
-Install dependencies:
+## How to Run
+
+### 1. Open backend folder
 
 ```bash
+cd backend
 npm install
-npm --prefix frontend install
-```
-
-Start the project:
-
-```bash
-npm run dev
-```
-
-Frontend will run on `http://localhost:5173`  
-Backend will run on `http://localhost:3001`
-
-## Build for production
-
-```bash
-npm run build
 npm start
 ```
 
-Then open:
+Backend will run on:
 
 `http://localhost:3001`
 
-## Why I made this
+### 2. Open frontend folder in another terminal
 
-I wanted to build something related to security and practical debugging problems. In many teams, logs and copied error data are shared very casually, and that can expose sensitive information. This project tries to solve that in a simple way.
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
+Frontend will run on:
 
+`http://localhost:5173`
+
+## API
+
+### POST `/analyze`
+
+Sample JSON request:
+
+```json
+{
+  "input_type": "text",
+  "content": "email=test@example.com\npassword=admin123",
+  "options": {
+    "mask": true,
+    "log_analysis": true
+  }
+}
+```
+
+Sample response:
+
+```json
+{
+  "summary": "Sensitive credentials found. Immediate review is recommended.",
+  "findings": [
+    {
+      "label": "Email Address",
+      "risk": "low",
+      "line": 1
+    },
+    {
+      "label": "Password",
+      "risk": "critical",
+      "line": 2
+    }
+  ],
+  "risk_score": 11,
+  "risk_level": "high",
+  "insights": [
+    "Sensitive credentials found",
+    "Overall risk is high enough to block public sharing until cleanup is done"
+  ]
+}
+```
+
+## Sample Test Input
+
+```text
+2026-03-24 10:20:00 INFO User login started
+email=student@example.com
+password=project123
+token=abcde12345xyz
+TypeError: Cannot read property of undefined
+```
+
+## Notes
+
+- This is a student level project, so the AI insight part is kept simple.
+- The current version uses regex rules and generated summary logic instead of a paid AI API.
+- File upload is limited to safe text based files only.
