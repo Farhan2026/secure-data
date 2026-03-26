@@ -78,7 +78,7 @@ function App() {
     <div className="page">
       <div className="container">
         <header className="hero">
-          <p className="tag">Final Year Project</p>
+          <p className="tag">Major Project</p>
           <h1>AI Secure Data Intelligence Platform</h1>
           <p className="subtitle">
             A simple tool to scan logs and text for risky data like passwords,
