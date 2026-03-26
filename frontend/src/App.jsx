@@ -2,7 +2,7 @@ import { useState } from "react";
 import InputPanel from "./components/InputPanel.jsx";
 import ReportPanel from "./components/ReportPanel.jsx";
 
-const API_URL = `${import.meta.env.VITE_API_URL || "http://localhost:3001"}/analyze`;
+const API_URL = "https://secure-data.onrender.com/analyze";
 
 function App() {
   const [textInput, setTextInput] = useState("");
